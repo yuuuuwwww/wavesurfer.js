@@ -10,7 +10,7 @@ module.exports = {
         'html-init': path.join(rootDir, 'src', 'html-init.js')
     },
     output: {
-        path: path.join(rootDir, 'dist'),
+        path: path.join(rootDir, '../../static/js/wavesurfer'),
         filename: 'wavesurfer-[name].js',
         library: ['WaveSurfer', '[name]']
     },

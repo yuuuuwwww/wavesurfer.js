@@ -31,7 +31,7 @@ module.exports = {
         'elan'
     ]),
     output: {
-        path: path.join(rootDir, 'dist', 'plugin'),
+        path: path.join(rootDir, '../../static/js/wavesurfer', 'plugin'),
         filename: 'wavesurfer.[name].js',
         library: ['WaveSurfer', '[name]'],
         publicPath: 'localhost:8080/dist/plugin/'
