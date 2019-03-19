@@ -563,9 +563,7 @@ export default class SpectrogramPlugin {
         const getMaxY = frequenciesHeight || 512;
         const labelIndex = 5 * (getMaxY / 256);
         const freqStart = 0;
-        const step =
-            (this.wavesurfer.backend.ac.sampleRate / 2 - freqStart) /
-            labelIndex;
+        const step = (this.params.freq_max - freqStart) / labelIndex;
 
         const ctx = this.labelsEl.getContext('2d');
         this.labelsEl.height = this.height;
