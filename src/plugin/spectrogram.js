@@ -360,8 +360,19 @@ export default class SpectrogramPlugin {
     }
 
     drawF0(data) {
-        console.log('Draw F0 here.');
-        console.log(this.f0Cc);
+        const f0_freq = data;
+        const f0_height = (this.height * f0_freq) / this.params.freq_max;
+
+        this.f0Cc.fillStyle = 'rgb(255, 0, 0)';
+
+        for (var i = 0; i < this.width; i++) {
+            this.f0Cc.fillRect(
+                i,
+                this.height - f0_height, // Height of F0
+                1,
+                1
+            );
+        }
     }
 
     createWrapper() {
