@@ -315,7 +315,7 @@ export default class SpectrogramPlugin {
             this.pixelRatio = this.params.pixelRatio || ws.params.pixelRatio;
             this.fftSamples =
                 this.params.fftSamples || ws.params.fftSamples || 512;
-            this.height = this.fftSamples / 2;
+            this.height = 400;
             this.noverlap = params.noverlap;
             this.windowFunc = params.windowFunc;
             this.alpha = params.alpha;
@@ -323,7 +323,9 @@ export default class SpectrogramPlugin {
                 (this.height * params.freq_max * 2) /
                 this.wavesurfer.backend.buffer.sampleRate;
             this.heightFactor = this.wavesurfer.backend.buffer
-                ? 2 / this.wavesurfer.backend.buffer.numberOfChannels
+                ? (2 * 2 * this.height) /
+                  this.wavesurfer.backend.buffer.numberOfChannels /
+                  this.fftSamples
                 : 1;
 
             this.createWrapper();
@@ -547,7 +549,7 @@ export default class SpectrogramPlugin {
         let j;
 
         for (i = 0; i < pixels.length; i++) {
-            for (j = 0; j < my.height_max; j++) {
+            for (j = 0; j < my.height; j++) {
                 const colorValue = 255 - pixels[i][j];
                 my.spectrCc.fillStyle =
                     'rgb(' +
