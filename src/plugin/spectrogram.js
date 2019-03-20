@@ -444,7 +444,7 @@ export default class SpectrogramPlugin {
         this.canvas.style.width = width;
     }
 
-    drawSpectrogram(frequenciesData, my, sampleRate) {
+    drawSpectrogram(frequenciesData, my) {
         const spectrCc = my.spectrCc;
         const length = my.wavesurfer.backend.getDuration();
         const height = my.height;
@@ -518,7 +518,7 @@ export default class SpectrogramPlugin {
             frequencies.push(array);
             currentOffset += fftSamples - noverlap;
         }
-        callback(frequencies, this, sampleRate);
+        callback(frequencies, this);
     }
 
     loadFrequenciesData(url) {
