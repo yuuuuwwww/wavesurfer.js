@@ -356,6 +356,11 @@ export default class SpectrogramPlugin {
         }
     }
 
+    drawF0(data) {
+        console.log('Draw F0 here.');
+        console.log(this.f0Cc);
+    }
+
     createWrapper() {
         const prevSpectrogram = this.container.querySelector('spectrogram');
         if (prevSpectrogram) {
@@ -418,12 +423,20 @@ export default class SpectrogramPlugin {
         const canvas = (this.canvas = this.wrapper.appendChild(
             document.createElement('canvas')
         ));
+        const canvas_f0 = (this.canvas_f0 = this.wrapper.appendChild(
+            document.createElement('canvas')
+        ));
 
         this.spectrCc = canvas.getContext('2d');
+        this.f0Cc = canvas_f0.getContext('2d');
 
         this.util.style(canvas, {
             position: 'absolute',
             zIndex: 4
+        });
+        this.util.style(canvas_f0, {
+            position: 'absolute',
+            zIndex: 10
         });
     }
 
@@ -439,9 +452,9 @@ export default class SpectrogramPlugin {
 
     updateCanvasStyle() {
         const width = Math.round(this.width / this.pixelRatio) + 'px';
-        this.canvas.width = this.width;
-        this.canvas.height = this.height;
-        this.canvas.style.width = width;
+        this.canvas_f0.width = this.canvas.width = this.width;
+        this.canvas_f0.height = this.canvas.height = this.height;
+        this.canvas_f0.style.width = this.canvas.style.width = width;
     }
 
     drawSpectrogram(frequenciesData, my) {
