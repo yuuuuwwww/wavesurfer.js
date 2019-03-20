@@ -404,13 +404,24 @@ export default class SpectrogramPlugin {
             // Get coordinates of clicked point
             const pos = getRealCoordinate(e.clientX, e.clientY, this.canvas_f0);
 
+            // Remove existing line
+            this.f0Cc.clearRect(
+                this.before_x,
+                0,
+                pos.x - this.before_x,
+                this.height
+            );
+
+            // Draw line
             this.f0Cc.strokeStyle = 'rgb(255, 0, 0)';
-            this.f0Cc.lineWidth = 5;
+            this.f0Cc.beginPath();
+            this.f0Cc.lineWidth = 1;
             this.f0Cc.moveTo(this.before_x, this.before_y);
             this.f0Cc.lineTo(pos.x, pos.y);
             this.f0Cc.stroke();
             this.f0Cc.closePath();
 
+            // Update former position
             this.before_x = pos.x;
             this.before_y = pos.y;
         });
@@ -419,7 +430,6 @@ export default class SpectrogramPlugin {
     drawF0(data) {
         const f0_freq = data;
         const f0_height = (this.height * f0_freq) / this.params.freq_max;
-        console.log('f0_height: ', f0_height);
         this.f0Cc.fillStyle = 'rgb(255, 0, 0)';
 
         for (var i = 0; i < this.width; i++) {
@@ -535,7 +545,7 @@ export default class SpectrogramPlugin {
         const pixels = my.resample(frequenciesData);
         let i;
         let j;
-        console.log(pixels[0].length);
+
         for (i = 0; i < pixels.length; i++) {
             for (j = 0; j < my.height_max; j++) {
                 const colorValue = 255 - pixels[i][j];
