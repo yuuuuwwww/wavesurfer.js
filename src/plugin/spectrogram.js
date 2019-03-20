@@ -329,6 +329,7 @@ export default class SpectrogramPlugin {
             this.createWrapper();
             this.createCanvas();
             this.render();
+            this.initializeF0Drawing();
 
             drawer.wrapper.addEventListener('scroll', this._onScroll);
             ws.on('redraw', this._onRender);
@@ -359,10 +360,66 @@ export default class SpectrogramPlugin {
         }
     }
 
+    initializeF0Drawing() {
+        this.isDrawingF0 = false; // For deciding drawing or not
+        this.before_x = 0;
+        this.before_y = 0;
+
+        function getRealCoordinate(event_x, event_y, canvas_f0) {
+            const rect = canvas_f0.getBoundingClientRect(),
+                scaleX = canvas_f0.width / rect.width,
+                scaleY = canvas_f0.height / rect.height;
+            return {
+                x: Math.floor((event_x - rect.left) * scaleX),
+                y: Math.floor((event_y - rect.top) * scaleY)
+            };
+        }
+        getRealCoordinate.bind(this);
+
+        this.canvas_f0.addEventListener('mousedown', e => {
+            e.preventDefault();
+            this.isDrawingF0 = true;
+
+            // Update before_x, before_y
+            const pos = getRealCoordinate(e.clientX, e.clientY, this.canvas_f0);
+            this.before_x = pos.x;
+            this.before_y = pos.y;
+        });
+        this.canvas_f0.addEventListener('mouseup', e => {
+            e.preventDefault();
+            this.isDrawingF0 = false;
+        });
+        this.canvas_f0.addEventListener('mouseleave', e => {
+            e.preventDefault();
+            this.isDrawingF0 = false;
+        });
+        this.canvas_f0.addEventListener('mousemove', e => {
+            e.preventDefault();
+
+            // Do nothing if not drawing
+            if (!this.isDrawingF0) {
+                return;
+            }
+
+            // Get coordinates of clicked point
+            const pos = getRealCoordinate(e.clientX, e.clientY, this.canvas_f0);
+
+            this.f0Cc.strokeStyle = 'rgb(255, 0, 0)';
+            this.f0Cc.lineWidth = 5;
+            this.f0Cc.moveTo(this.before_x, this.before_y);
+            this.f0Cc.lineTo(pos.x, pos.y);
+            this.f0Cc.stroke();
+            this.f0Cc.closePath();
+
+            this.before_x = pos.x;
+            this.before_y = pos.y;
+        });
+    }
+
     drawF0(data) {
         const f0_freq = data;
         const f0_height = (this.height * f0_freq) / this.params.freq_max;
-
+        console.log('f0_height: ', f0_height);
         this.f0Cc.fillStyle = 'rgb(255, 0, 0)';
 
         for (var i = 0; i < this.width; i++) {
