@@ -322,6 +322,9 @@ export default class SpectrogramPlugin {
             this.height_max =
                 (this.height * params.freq_max * 2) /
                 this.wavesurfer.backend.buffer.sampleRate;
+            this.heightFactor = this.wavesurfer.backend.buffer
+                ? 2 / this.wavesurfer.backend.buffer.numberOfChannels
+                : 1;
 
             this.createWrapper();
             this.createCanvas();
@@ -462,7 +465,6 @@ export default class SpectrogramPlugin {
         const length = my.wavesurfer.backend.getDuration();
         const height = my.height;
         const pixels = my.resample(frequenciesData);
-        const heightFactor = my.buffer ? 2 / my.buffer.numberOfChannels : 1;
         let i;
         let j;
         console.log(pixels[0].length);
@@ -479,9 +481,9 @@ export default class SpectrogramPlugin {
                     ')';
                 my.spectrCc.fillRect(
                     i,
-                    height - (j * heightFactor * height) / my.height_max,
+                    height - (j * my.heightFactor * height) / my.height_max,
                     1,
-                    Math.ceil((heightFactor * height) / my.height_max)
+                    Math.ceil((my.heightFactor * height) / my.height_max)
                 );
             }
         }
