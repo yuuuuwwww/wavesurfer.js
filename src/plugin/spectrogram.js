@@ -453,7 +453,6 @@ export default class SpectrogramPlugin {
         var data = imageData.data;
         // Define array for F0 data
         var f0_array = [];
-        console.log(f0_array);
         // Get length of whole data in seconds
         var duration = this.wavesurfer.getDuration();
         // Set start and end of the window in pixel
