@@ -444,6 +444,35 @@ export default class SpectrogramPlugin {
         }
     }
 
+    getCurrentF0() {
+        // Get canvas size
+        var w = this.width;
+        var h = this.height;
+        // Get data from canvas
+        var imageData = this.f0Cc.getImageData(0, 0, w, h);
+        var data = imageData.data;
+        // Define array for F0 data
+        var f0_array = [];
+
+        for (var x = 0; x < w; x++) {
+            for (var y = 0; y < h; y++) {
+                var i = (y * w + x) * 4;
+                var r = data[i];
+                var g = data[i + 1];
+                var b = data[i + 2];
+                var a = data[i + 3];
+
+                if (r > 0) {
+                    f0_array.push(
+                        ((this.height - y) * this.params.freq_max) / this.height
+                    );
+                }
+            }
+        }
+
+        return f0_array;
+    }
+
     createWrapper() {
         const prevSpectrogram = this.container.querySelector('spectrogram');
         if (prevSpectrogram) {
