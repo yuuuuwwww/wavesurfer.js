@@ -444,7 +444,7 @@ export default class SpectrogramPlugin {
         }
     }
 
-    getCurrentF0() {
+    getCurrentF0(t_start, t_end) {
         // Get canvas size
         var w = this.width;
         var h = this.height;
@@ -453,8 +453,24 @@ export default class SpectrogramPlugin {
         var data = imageData.data;
         // Define array for F0 data
         var f0_array = [];
+        console.log(f0_array);
+        // Get length of whole data in seconds
+        var duration = this.wavesurfer.getDuration();
+        // Set start and end of the window in pixel
+        var px_start, px_end;
+        if (t_start === undefined && t_end === undefined) {
+            px_start = 0;
+            px_end = w;
+        } else {
+            px_start = Math.ceil((w * t_start) / duration);
+            px_end = Math.ceil((w * t_end) / duration);
+        }
 
-        for (var x = 0; x < w; x++) {
+        var y_list; // List of y where r = 255
+        for (var x = px_start; x < px_end; x++) {
+            // Initialize y_list
+            y_list = [];
+
             for (var y = 0; y < h; y++) {
                 var i = (y * w + x) * 4;
                 var r = data[i];
@@ -462,12 +478,28 @@ export default class SpectrogramPlugin {
                 var b = data[i + 2];
                 var a = data[i + 3];
 
-                if (r > 0) {
-                    f0_array.push(
-                        ((this.height - y) * this.params.freq_max) / this.height
-                    );
+                if (r === 255) {
+                    y_list.push(y);
                 }
             }
+
+            // Append average of y to F0 array
+            var sum = function(arr, fn) {
+                if (fn) {
+                    return sum(arr.map(fn));
+                } else {
+                    return arr.reduce(function(prev, current, i, arr) {
+                        return prev + current;
+                    });
+                }
+            };
+            var average = function(arr, fn) {
+                return sum(arr, fn) / arr.length;
+            };
+            f0_array.push(
+                ((this.height - average(y_list)) * this.params.freq_max) /
+                    this.height
+            );
         }
 
         return f0_array;
