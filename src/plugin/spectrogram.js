@@ -362,10 +362,15 @@ export default class SpectrogramPlugin {
         }
     }
 
+    changeModeTo(newMode) {
+        this.mode = newMode;
+    }
+
     initializeF0Drawing() {
         this.isDrawingF0 = false; // For deciding drawing or not
         this.before_x = 0;
         this.before_y = 0;
+        this.mode = 'pen';
 
         function getRealCoordinate(event_x, event_y, canvas_f0) {
             const rect = canvas_f0.getBoundingClientRect(),
@@ -414,14 +419,25 @@ export default class SpectrogramPlugin {
                 this.height
             );
 
-            // Draw line
-            this.f0Cc.strokeStyle = 'rgb(255, 0, 0)';
-            this.f0Cc.beginPath();
-            this.f0Cc.lineWidth = 3;
-            this.f0Cc.moveTo(this.before_x, this.before_y);
-            this.f0Cc.lineTo(pos.x, pos.y);
-            this.f0Cc.stroke();
-            this.f0Cc.closePath();
+            if (this.mode === 'pen') {
+                // Draw line
+                this.f0Cc.strokeStyle = 'rgb(255, 0, 0)';
+                this.f0Cc.beginPath();
+                this.f0Cc.lineWidth = 3;
+                this.f0Cc.moveTo(this.before_x, this.before_y);
+                this.f0Cc.lineTo(pos.x, pos.y);
+                this.f0Cc.stroke();
+                this.f0Cc.closePath();
+            } else if (this.mode === 'eraser') {
+                // Draw line
+                this.f0Cc.strokeStyle = 'rgb(255, 0, 0)';
+                this.f0Cc.beginPath();
+                this.f0Cc.lineWidth = 3;
+                this.f0Cc.moveTo(this.before_x, this.height);
+                this.f0Cc.lineTo(pos.x, this.height);
+                this.f0Cc.stroke();
+                this.f0Cc.closePath();
+            }
 
             // Update former position
             this.before_x = pos.x;
