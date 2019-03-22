@@ -372,6 +372,10 @@ export default class SpectrogramPlugin {
         this.before_y = 0;
         this.mode = 'pen';
 
+        // Canvas settings
+        this.f0Cc.strokeStyle = 'rgb(255, 0, 0)';
+        this.f0Cc.lineWidth = 3;
+
         function getRealCoordinate(event_x, event_y, canvas_f0) {
             const rect = canvas_f0.getBoundingClientRect(),
                 scaleX = canvas_f0.width / rect.width,
@@ -421,7 +425,6 @@ export default class SpectrogramPlugin {
 
             if (this.mode === 'pen') {
                 // Draw line
-                this.f0Cc.strokeStyle = 'rgb(255, 0, 0)';
                 this.f0Cc.beginPath();
                 this.f0Cc.lineWidth = 3;
                 this.f0Cc.moveTo(this.before_x, this.before_y);
@@ -430,7 +433,6 @@ export default class SpectrogramPlugin {
                 this.f0Cc.closePath();
             } else if (this.mode === 'eraser') {
                 // Draw line
-                this.f0Cc.strokeStyle = 'rgb(255, 0, 0)';
                 this.f0Cc.beginPath();
                 this.f0Cc.lineWidth = 3;
                 this.f0Cc.moveTo(this.before_x, this.height);
@@ -449,8 +451,6 @@ export default class SpectrogramPlugin {
         const f0_freq = data;
         const f0_height = (this.height * f0_freq) / this.params.freq_max;
 
-        this.f0Cc.strokeStyle = 'rgb(255, 0, 0)';
-        this.f0Cc.lineWidth = 3;
         this.f0Cc.beginPath();
 
         var before_x = 0;
