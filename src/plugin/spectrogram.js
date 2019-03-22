@@ -417,7 +417,7 @@ export default class SpectrogramPlugin {
             // Draw line
             this.f0Cc.strokeStyle = 'rgb(255, 0, 0)';
             this.f0Cc.beginPath();
-            this.f0Cc.lineWidth = 1;
+            this.f0Cc.lineWidth = 3;
             this.f0Cc.moveTo(this.before_x, this.before_y);
             this.f0Cc.lineTo(pos.x, pos.y);
             this.f0Cc.stroke();
@@ -432,16 +432,24 @@ export default class SpectrogramPlugin {
     drawF0(data) {
         const f0_freq = data;
         const f0_height = (this.height * f0_freq) / this.params.freq_max;
-        this.f0Cc.fillStyle = 'rgb(255, 0, 0)';
+
+        this.f0Cc.strokeStyle = 'rgb(255, 0, 0)';
+        this.f0Cc.lineWidth = 3;
+        this.f0Cc.beginPath();
+
+        var before_x = 0;
+        var before_y = this.height - f0_height;
 
         for (var i = 0; i < this.width; i++) {
-            this.f0Cc.fillRect(
-                i,
-                this.height - f0_height, // Height of F0
-                1,
-                1
-            );
+            this.f0Cc.moveTo(before_x, before_y);
+            this.f0Cc.lineTo(i, this.height - f0_height);
+            this.f0Cc.stroke();
+
+            before_x = i;
+            before_y = this.height - f0_height;
         }
+
+        this.f0Cc.closePath();
     }
 
     getCurrentF0(t_start, t_end) {
