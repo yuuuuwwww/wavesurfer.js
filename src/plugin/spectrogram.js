@@ -506,6 +506,10 @@ export default class SpectrogramPlugin {
                 }
             }
 
+            if (y_list === undefined || y_list.length == 0) {
+                y_list = [0];
+            }
+
             // Append average of y to F0 array
             var sum = function(arr, fn) {
                 if (fn) {
